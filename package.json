@@ -12,5 +12,8 @@
     "@babel/node": "^7.14.9",
     "@babel/preset-env": "^7.15.0",
     "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "ws": "^8.2.0"
   }
 }
