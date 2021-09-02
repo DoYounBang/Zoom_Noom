@@ -1,6 +1,7 @@
 import http from "http";
 import WebSocket from "ws";
 import express from "express";
+import { SocketAddress } from "net";
 
 const app = express();
 
@@ -14,16 +15,20 @@ const handleListen = () => console.log('Listening on http://localhost:3000/');
 
 const server = http.createServer(app); //http 서버
 const wss = new WebSocket.Server({ server }); //ws 서버
-//서버에서 http, webSocket 둘다 작동시킴
+
+function onSocketClose() {
+  console.log("Disconnected from the Vrowser 🌑");
+}
+
+const sockets = [];
 
 wss.on("connection", (socket) => {
+    sockets.push(socket);
     console.log("Connected to Browser 🌕");
-    socket.on("close", () => console.log("Disconnected from the Browser 🌑"));
+    socket.on("close", onSocketClose);
     socket.on('message', message => {
-        const translatedMessageData = message.toString('utf8'); // 정수형으로 바꿔줌
-        console.log(translatedMessageData);
-      }); // frontend와 메시지를 주고받음
-    socket.send("hello!!!");
+      sockets.forEach((aSocket) => aSocket.send(message.toString('utf8')));
+      }); // frontend와 메시지를 주고받음 
   });
 
 server.listen(3000, handleListen);
