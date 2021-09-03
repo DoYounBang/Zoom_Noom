@@ -2,6 +2,7 @@ import http from "http";
 import WebSocket from "ws";
 import express from "express";
 import { SocketAddress } from "net";
+import { join } from "path";
 
 const app = express();
 
@@ -24,11 +25,20 @@ const sockets = [];
 
 wss.on("connection", (socket) => {
     sockets.push(socket);
+    socket["nickname"] = "익명"
     console.log("Connected to Browser 🌕");
     socket.on("close", onSocketClose);
-    socket.on('message', message => {
-      sockets.forEach((aSocket) => aSocket.send(message.toString('utf8')));
-      }); // frontend와 메시지를 주고받음 
+    socket.on('message', (msg) => {
+      const message = JSON.parse(msg);
+      switch(message.type){
+        case "new_message":
+          sockets.forEach((aSocket) => 
+            aSocket.send(`${socket.nickname}: ${message.payload}`)
+          );
+        case "nickname":
+          socket["nickname"] = message.payload;
+      }
+    }); //frontend와 메시지를 주고받음
   });
 
 server.listen(3000, handleListen);
