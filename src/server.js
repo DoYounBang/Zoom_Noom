@@ -1,8 +1,8 @@
 import http from "http";
-import WebSocket from "ws";
+import SocketIO from "socket.io";
+// import WebSocket from "ws";
 import express from "express";
-import { SocketAddress } from "net";
-import { join } from "path";
+
 
 const app = express();
 
@@ -14,15 +14,19 @@ app.get("/*", (_, res) => res.redirect("/"));
 
 const handleListen = () => console.log('Listening on http://localhost:3000/');
 
-const server = http.createServer(app); //http 서버
-const wss = new WebSocket.Server({ server }); //ws 서버
+const httpServer = http.createServer(app); 
+const wsServer = SocketIO(httpServer);
+
+wsServer.on("connection", (socket) =>{
+  console.log(socket);
+});
 
 function onSocketClose() {
   console.log("Disconnected from the Vrowser 🌑");
 }
 
+/* const wss = new WebSocket.Server({ server }); //ws 서버
 const sockets = [];
-
 wss.on("connection", (socket) => {
     sockets.push(socket);
     socket["nickname"] = "익명"
@@ -39,7 +43,7 @@ wss.on("connection", (socket) => {
         case "nickname":
           socket["nickname"] = message.payload;
       }
-    }); //frontend와 메시지를 주고받음
+    });
   });
-
-server.listen(3000, handleListen);
+ */
+httpServer.listen(3000, handleListen);
