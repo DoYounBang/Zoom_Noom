@@ -1,5 +1,19 @@
 const socket = io();
 
+const welcome = document.getElementById("welcome")
+const form = welcome.querySelector("form")
+
+function handleRoomSubmit(event){
+    event.preventDefault();
+    const input = form.querySelector("input");
+    socket.emit("enter_room", { payload: input.value }, () => {
+        console.log("sever is done!");
+    });
+    input.value = ""; //서버로 부터 실행되는 function을 보냄, emit와 on은 같음 그래서 이름도 같아야 함.
+}
+
+form.addEventListener("submit", handleRoomSubmit);
+
 
 /* const messageList = document.querySelector("ul");
 const nickForm = document.querySelector("#nick");

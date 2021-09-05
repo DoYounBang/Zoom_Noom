@@ -3,7 +3,6 @@ import SocketIO from "socket.io";
 // import WebSocket from "ws";
 import express from "express";
 
-
 const app = express();
 
 app.set("view engine","pug");
@@ -18,12 +17,17 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", (socket) =>{
-  console.log(socket);
-});
+  socket.on("enter_room", (msg, done) => {
+    console.log(msg);
+    setTimeout(() => {
+        done()
+    }, 10000);
+  });
+}); //Jsom object를 보냄
 
-function onSocketClose() {
+/* function onSocketClose() {
   console.log("Disconnected from the Vrowser 🌑");
-}
+} */
 
 /* const wss = new WebSocket.Server({ server }); //ws 서버
 const sockets = [];
