@@ -17,12 +17,16 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", (socket) =>{
-  socket.on("enter_room", (roomName, done) => {
-    console.log(roomName);
-    setTimeout(() =>{
-      done("hello form the backend");
-    }, 15000);//front-end의 코드를 실행시킴.
+  socket.onAny((event) => {
+    console.log(`sockent Event: ${event}`);
   });
+  socket.on("enter_room", (roomName, done) => {
+    //console.log(socket.id);
+    //console.log(socket.rooms); // Set { <socket.id> }
+    socket.join(roomName);
+    done();
+    //console.log(socket.rooms); // Set { <socket.id>, "room1" }
+  });//front-end의 코드를 실행시킴.
 }); //Jsom object를 보냄
 
 /* function onSocketClose() {

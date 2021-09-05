@@ -1,16 +1,25 @@
 const socket = io();
 
-const welcome = document.getElementById("welcome")
-const form = welcome.querySelector("form")
+const welcome = document.getElementById("welcome");
+const form = welcome.querySelector("form");
+const room = document.getElementById("room");
 
-function backendDone(mes){
-    console.log(`The backend says: `, mes);//front-end 에서 코드를 만들어 back-end에서 코드를 실행함
+room.hidden = true;
+
+let roomName;
+    
+function showRoom(mes){
+    welcome.hidden = true;
+    room.hidden = false;
+    const h3 = room.querySelector("h3");
+    h3.innerText = `Room ${roomName}`;
 }
 
 function handleRoomSubmit(event){
     event.preventDefault();
     const input = form.querySelector("input");
-    socket.emit("enter_room", { payload: input.value },backendDone);// 순서 = event name, 내 마음대로 , function
+    socket.emit("enter_room", { payload: input.value },showRoom);// 순서 = event name, 내 마음대로 , function
+    roomName = input.value;
     input.value = ""; //서버로 부터 실행되는 function을 보냄, emit와 on은 같음 그래서 이름도 같아야 함.
 }
 
