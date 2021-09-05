@@ -16,16 +16,17 @@ const handleListen = () => console.log('Listening on http://localhost:3000/');
 const httpServer = http.createServer(app); 
 const wsServer = SocketIO(httpServer);
 
-wsServer.on("connection", (socket) =>{
+wsServer.on("connection", (socket) => {
   socket.onAny((event) => {
     console.log(`sockent Event: ${event}`);
   });
   socket.on("enter_room", (roomName, done) => {
-    //console.log(socket.id);
-    //console.log(socket.rooms); // Set { <socket.id> }
     socket.join(roomName);
     done();
-    //console.log(socket.rooms); // Set { <socket.id>, "room1" }
+    socket.to(roomName).emit("welcome");
+    /*console.log(socket.id);
+    console.log(socket.rooms); // Set { <socket.id> }
+    console.log(socket.rooms); // Set { <socket.id>, "room1" }*/
   });//front-end의 코드를 실행시킴.
 }); //Jsom object를 보냄
 

@@ -7,6 +7,13 @@ const room = document.getElementById("room");
 room.hidden = true;
 
 let roomName;
+
+function addMessage(message){
+    const ul = room.querySelector("ul");
+    const li = document.createElement("li");
+    li.innerText = message;
+    ul.appendChild(li);
+}
     
 function showRoom(mes){
     welcome.hidden = true;
@@ -15,15 +22,20 @@ function showRoom(mes){
     h3.innerText = `Room ${roomName}`;
 }
 
-function handleRoomSubmit(event){
+function handleRoomSubmit(event) {
     event.preventDefault();
     const input = form.querySelector("input");
-    socket.emit("enter_room", { payload: input.value },showRoom);// 순서 = event name, 내 마음대로 , function
+    socket.emit("enter_room", input.value ,showRoom);// 순서 = event name, 내 마음대로 , function
     roomName = input.value;
     input.value = ""; //서버로 부터 실행되는 function을 보냄, emit와 on은 같음 그래서 이름도 같아야 함.
 }
 
 form.addEventListener("submit", handleRoomSubmit);
+
+
+socket.on("welcome", () => {
+    addMessage("새로운 사람이 왔습니다!");
+});
 
 
 /* const messageList = document.querySelector("ul");
