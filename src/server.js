@@ -17,25 +17,28 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", (socket) => {
+  socket["nickname"] = "익명";
   socket.onAny((event) => {
     console.log(`sockent Event: ${event}`);
   });
   socket.on("enter_room", (roomName, done) => {
     socket.join(roomName);
     done();
-    socket.to(roomName).emit("welcome");
+    socket.to(roomName).emit("welcome", socket.nickname);
     /*console.log(socket.id);
     console.log(socket.rooms); // Set { <socket.id> }
     console.log(socket.rooms); // Set { <socket.id>, "room1" }*/
   });//front-end의 코드를 실행시킴.
   socket.on("disconnecting", () => {
-    socket.rooms.forEach((room) => socket.to(room).emit("bye"));
+    socket.rooms.forEach((room) => 
+      socket.to(room).emit("bye", socket.nickname));
   });
-  socket.on("new_message", (msg, room, done) =>{
-    socket.to(room).emit("new_message", msg);
-    done();//뱍앤드에서 실행하지 않음
+  socket.on("new_message", (msg, room, done) => {
+    socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
+    done();//백앤드에서 실행하지 않음
   });
-}); //Jsom object를 보냄
+  socket.on("nickname", (nickname) => (socket["nickname"] = nickname));
+});
 
 /* function onSocketClose() {
   console.log("Disconnected from the Vrowser 🌑");
