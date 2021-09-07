@@ -28,6 +28,13 @@ wsServer.on("connection", (socket) => {
     console.log(socket.rooms); // Set { <socket.id> }
     console.log(socket.rooms); // Set { <socket.id>, "room1" }*/
   });//front-end의 코드를 실행시킴.
+  socket.on("disconnecting", () => {
+    socket.rooms.forEach((room) => socket.to(room).emit("bye"));
+  });
+  socket.on("new_message", (msg, room, done) =>{
+    socket.to(room).emit("new_message", msg);
+    done();//뱍앤드에서 실행하지 않음
+  });
 }); //Jsom object를 보냄
 
 /* function onSocketClose() {
