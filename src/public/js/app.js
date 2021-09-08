@@ -28,7 +28,7 @@ function handleMessageSubmit(event){
   function handleNicknameSubmit(event){
     event.preventDefault();
     const input = room.querySelector("#name input");
-    socket.emit("nickname ", input.value);
+    socket.emit("nickname", input.value);
 }  
     
 function showRoom(mes){
