@@ -1,7 +1,8 @@
 import http from "http";
-import {Server} from "socket.io";
-import { instrument } from "@socket.io/admin-ui";
-// import WebSocket from "ws";
+import SocketIO from "socket.io";
+// import {Server} from "socket.io";
+// import { instrument } from "@socket.io/admin-ui";
+// import WebSocket from "ws"; socket.io를 활용하지 않는
 import express from "express";
 
 const app = express();
@@ -12,9 +13,22 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (_, res) => res.render("home"));
 app.get("/*", (_, res) => res.redirect("/"));
 
-const handleListen = () => console.log('Listening on http://localhost:3000/');
 
 const httpServer = http.createServer(app); 
+const wsServer = SocketIO(httpServer);
+
+const handleListen = () => console.log('Listening on http://localhost:3000/');
+httpServer.listen(3000, handleListen);
+
+
+
+
+
+
+
+
+
+/* socket.io를 이용한 채팅 부분
 const wsServer = new Server(httpServer, {
   cors: {
     origin: ["https://admin.socket.io"],
@@ -57,7 +71,7 @@ wsServer.on("connection", (socket) => {
     /*console.log(socket.id);
     console.log(socket.rooms); // Set { <socket.id> }
     console.log(socket.rooms); // Set { <socket.id>, "room1" }*/
-  });//front-end의 코드를 실행시킴.
+  /*});//front-end의 코드를 실행시킴.
   socket.on("disconnecting", () => {
     socket.rooms.forEach((room) => 
       socket.to(room).emit("bye", socket.nickname, countRoom(room) -1)
@@ -71,7 +85,13 @@ wsServer.on("connection", (socket) => {
     done();//백앤드에서 실행하지 않음
   });
   socket.on("nickname", (nickname) => (socket["nickname"] = nickname));
-});
+});*/
+
+
+
+
+
+
 
 /* function onSocketClose() {
   console.log("Disconnected from the Vrowser 🌑");
@@ -99,4 +119,3 @@ wss.on("connection", (socket) => {
   });
  */
 
-httpServer.listen(3000, handleListen);

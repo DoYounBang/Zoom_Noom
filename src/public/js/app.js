@@ -1,5 +1,54 @@
 const socket = io();
 
+const myFaace = document.getElementById("myFace");
+const mutBtn = document.getElementById("mute");
+const cameraBtn = document.getElementById("camera");
+
+let myStream;
+let muted = false;
+let cameraOff = false;
+
+async function getMedia() {
+    try {
+      myStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      myFace.srcObject = myStream;
+    } catch (e) {
+      console.log(e);
+    }
+}
+
+getMedia();
+
+function handleMuteClick(){
+    if(!muted){
+        mutBtn.innerText = "Unmute";
+        muted = true;
+    } else{
+        mutBtn.innerText = "Mute";
+        muted = false;
+    }
+}
+function handleCamerClick(){
+    if(cameraOff){
+        cameraBtn.innerText = "Turn Camera Off";
+        cameraOff = false;
+    } else{
+        cameraBtn.innerText = "Turn Camera On";
+        cameraOff = true;
+    }
+}
+
+mutBtn.addEventListener("click", handleMuteClick);
+cameraBtn.addEventListener("click", handleCamerClick);
+
+
+
+
+
+/*  socket.io를 이용한 채팅 부분
 const welcome = document.getElementById("welcome");
 const form = welcome.querySelector("form");
 const room = document.getElementById("room");
@@ -79,6 +128,15 @@ socket.on("room_change", (rooms) => {
         roomList.append(li);
     });
 }); // socket.on("room_change", (msg) => console.log(msg)); 같은 내용임
+*/
+
+
+
+
+
+
+
+
 
 
 /* const messageList = document.querySelector("ul");
